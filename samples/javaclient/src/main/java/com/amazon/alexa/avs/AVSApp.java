@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javax.swing.SwingConstants;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -54,8 +55,8 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
     private static final Logger log = LoggerFactory.getLogger(AVSApp.class);
 
     private static final String APP_TITLE = "Alexa Voice Service";
-    private static final String START_LABEL = "Start Listening - click the spacebar";
-    private static final String STOP_LABEL = "Stop Listening - click spacebar";
+    private static final String START_LABEL = "  Start Listening - click the spacebar  ";
+    private static final String STOP_LABEL = "     Stop Listening - click spacebar     ";
     private static final String PROCESSING_LABEL = "Processing";
     private static final String PREVIOUS_LABEL = "\u21E4";
     private static final String NEXT_LABEL = "\u21E5";
@@ -101,8 +102,8 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
         authSetup.addAccessTokenListener(controller);
         authSetup.startProvisioningThread();
         try {
-          ImageIcon image = new ImageIcon("/home/pi/syra.jpg");
-          Image scaled = image.getImage().getScaledInstance(360, 480, Image.SCALE_SMOOTH);
+          ImageIcon image = new ImageIcon("/home/pi/alexa-avs-raspberry-pi/raspberry-pi.jpg");
+          Image scaled = image.getImage().getScaledInstance(480, 360, Image.SCALE_SMOOTH);
           JLabel label = new JLabel("", new ImageIcon(scaled), JLabel.CENTER);
           JPanel panel = new JPanel(new BorderLayout());
           panel.add(label, BorderLayout.CENTER);
@@ -119,10 +120,11 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
         getContentPane().setLayout(new FlowLayout());
         setTitle(getAppTitle());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(360, 700);
+        setSize(480, 580);
+        setResizable(false);
 
         Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
-        setLocation(screenSize.width/2-180, 90);
+        setLocation(screenSize.width/2+200, 90);
         setVisible(true);
         controller.startHandlingDirectives();
         this.setPreferredSize(new Dimension(900,700));
@@ -173,10 +175,10 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
 
     private void addTokenField() {
         JLabel syraLabel = new JLabel("Syra Hanink");
-        syraLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        syraLabel.setFont(new Font("Serif", Font.BOLD, 30));
         getContentPane().add(syraLabel);
-        getContentPane().add(new JLabel("5th Grade Science Fair Project"));
-        getContentPane().add(new JLabel("Amazon Alexa service on Raspberry Pi 3"));
+        getContentPane().add(new JLabel("          5th Grade Science Fair Project          "));
+        getContentPane().add(new JLabel("          Amazon Alexa service on Raspberry Pi 3          "));
         tokenTextField = new JTextField(50);
         tokenTextField.setVisible(false);
         tokenTextField.addActionListener(new ActionListener() {
@@ -198,6 +200,7 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
         visualizer = new JProgressBar(0, 100);
         Dimension size = visualizer.getPreferredSize();
         size.height = 25;
+        size.width = 200;
         visualizer.setPreferredSize(size);
         visualizer.setForeground(Color.RED);
         getContentPane().add(visualizer);
@@ -311,10 +314,11 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
 
     public void finishProcessing() {
         actionButton.setText(START_LABEL);
-        actionButton.setEnabled(true);
         visualizer.setIndeterminate(false);
         controller.processingFinished();
         actionButton.setVisible(true);
+        actionButton.setEnabled(true);
+        actionButton.requestFocus();
     }
 
     @Override

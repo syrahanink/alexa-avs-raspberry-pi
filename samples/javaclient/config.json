@@ -14,6 +14,6 @@
         "sslClientKeyStore":"/home/pi/alexa-avs-raspberry-pi/samples/javaclient/certs/client/client.pkcs12",
         "sslClientKeyStorePassphrase":"",
         "sslCaCert":"/home/pi/alexa-avs-raspberry-pi/samples/javaclient/certs/ca/ca.crt",
-        "sessionId":"284e3146-395b-48e0-a0d7-3de221da3065"
+        "sessionId":"e63be00d-3701-4ad7-9b9f-f16c9bb170d2"
     }
 }
