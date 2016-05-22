@@ -18,12 +18,18 @@ import com.amazon.alexa.avs.http.AVSClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
+import java.awt.Toolkit;
+import java.awt.Color;
+import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -38,6 +44,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 
 @SuppressWarnings("serial")
 public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMSListener,
@@ -46,8 +54,8 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
     private static final Logger log = LoggerFactory.getLogger(AVSApp.class);
 
     private static final String APP_TITLE = "Alexa Voice Service";
-    private static final String START_LABEL = "Start Listening";
-    private static final String STOP_LABEL = "Stop Listening";
+    private static final String START_LABEL = "Start Listening - click the spacebar";
+    private static final String STOP_LABEL = "Stop Listening - click spacebar";
     private static final String PROCESSING_LABEL = "Processing";
     private static final String PREVIOUS_LABEL = "\u21E4";
     private static final String NEXT_LABEL = "\u21E5";
@@ -92,19 +100,32 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
         authSetup.addAccessTokenListener(this);
         authSetup.addAccessTokenListener(controller);
         authSetup.startProvisioningThread();
+        try {
+          ImageIcon image = new ImageIcon("/home/pi/syra.jpg");
+          Image scaled = image.getImage().getScaledInstance(360, 480, Image.SCALE_SMOOTH);
+          JLabel label = new JLabel("", new ImageIcon(scaled), JLabel.CENTER);
+          JPanel panel = new JPanel(new BorderLayout());
+          panel.add(label, BorderLayout.CENTER);
+          getContentPane().add(panel);
+        } catch (Exception e) {}
 
-        addDeviceField();
+        //addDeviceField();
         addTokenField();
+        addPlaybackButtons();
         addVisualizerField();
         addActionField();
-        addPlaybackButtons();
 
-        getContentPane().setLayout(new GridLayout(0, 1));
+        //getContentPane().setLayout(new GridLayout(0, 1));
+        getContentPane().setLayout(new FlowLayout());
         setTitle(getAppTitle());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(400, 200);
+        setSize(360, 700);
+
+        Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+        setLocation(screenSize.width/2-180, 90);
         setVisible(true);
         controller.startHandlingDirectives();
+        this.setPreferredSize(new Dimension(900,700));
     }
 
     private String getAppVersion() {
@@ -151,8 +172,13 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
     }
 
     private void addTokenField() {
-        getContentPane().add(new JLabel("Bearer Token:"));
+        JLabel syraLabel = new JLabel("Syra Hanink");
+        syraLabel.setFont(new Font("Serif", Font.BOLD, 20));
+        getContentPane().add(syraLabel);
+        getContentPane().add(new JLabel("5th Grade Science Fair Project"));
+        getContentPane().add(new JLabel("Amazon Alexa service on Raspberry Pi 3"));
         tokenTextField = new JTextField(50);
+        tokenTextField.setVisible(false);
         tokenTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -170,6 +196,10 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
 
     private void addVisualizerField() {
         visualizer = new JProgressBar(0, 100);
+        Dimension size = visualizer.getPreferredSize();
+        size.height = 25;
+        visualizer.setPreferredSize(size);
+        visualizer.setForeground(Color.RED);
         getContentPane().add(visualizer);
     }
 
@@ -204,6 +234,7 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
                     controller.startRecording(rmsListener, requestListener);
                 } else { // else we must already be in listening
                     actionButton.setText(PROCESSING_LABEL); // go into processing mode
+                    actionButton.setVisible(false);
                     actionButton.setEnabled(false);
                     visualizer.setIndeterminate(true);
                     controller.stopRecording(); // stop the recording so the request can complete
@@ -272,10 +303,10 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
         });
 
         createMusicButton(container, PREVIOUS_LABEL, PlaybackAction.PREVIOUS);
-        container.add(playPauseButton);
+        //container.add(playPauseButton);
 
         createMusicButton(container, NEXT_LABEL, PlaybackAction.NEXT);
-        getContentPane().add(container);
+        //getContentPane().add(container);
     }
 
     public void finishProcessing() {
@@ -283,7 +314,7 @@ public class AVSApp extends JFrame implements ExpectSpeechListener, RecordingRMS
         actionButton.setEnabled(true);
         visualizer.setIndeterminate(false);
         controller.processingFinished();
-
+        actionButton.setVisible(true);
     }
 
     @Override

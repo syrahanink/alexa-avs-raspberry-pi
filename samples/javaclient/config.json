@@ -1,17 +1,19 @@
 {
-    "productId":"",
-    "dsn":"",
-    "provisioningMethod":"",
+    "productId":"AlexaPi",
+    "dsn":"123456",
+    "provisioningMethod":"companionService",
+    "avsHost":"https://avs-alexa-na.amazon.com",
     "companionApp":{
         "localPort":8443,
-        "sslKeyStore":"",
-        "sslKeyStorePassphrase":"",
-        "lwaUrl":"https://api.amazon.com"
+        "lwaUrl":"https://api.amazon.com",
+        "sslKeyStore":"/home/pi/alexa-avs-raspberry-pi/samples/javaclient/certs/server/jetty.pkcs12",
+        "sslKeyStorePassphrase":""
     },
     "companionService":{
         "serviceUrl":"https://localhost:3000",
-        "sslClientKeyStore":"",
+        "sslClientKeyStore":"/home/pi/alexa-avs-raspberry-pi/samples/javaclient/certs/client/client.pkcs12",
         "sslClientKeyStorePassphrase":"",
-        "sslCaCert":""
+        "sslCaCert":"/home/pi/alexa-avs-raspberry-pi/samples/javaclient/certs/ca/ca.crt",
+        "sessionId":"284e3146-395b-48e0-a0d7-3de221da3065"
     }
 }
